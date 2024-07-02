@@ -1,5 +1,6 @@
 #include "Roguelike.h"
 
+#include "WorldScene.h"
 #include "config.h"
 
 namespace rl {
@@ -10,7 +11,8 @@ namespace rl {
     auto bundle = world_bundle();
     bundle.load_from(resource_manager());
 
-    push_scene(&world_scene);
+    m_world_scene = std::make_unique<WorldScene>(this);
+    push_scene(m_world_scene.get());
   }
 
   gf::ResourceBundle Roguelike::world_bundle()

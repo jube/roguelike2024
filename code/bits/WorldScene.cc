@@ -1,9 +1,28 @@
 #include "WorldScene.h"
 
-namespace rl {
+#include "Roguelike.h"
 
-  WorldScene::WorldScene()
+namespace rl {
+  constexpr gf::Vec2 ScreenSize = { 80, 50 };
+
+  WorldScene::WorldScene(Roguelike* game)
+  : m_game(game)
+  , m_root_console(ScreenSize)
+  , m_console_font(game->resource_manager()->get<gf::ConsoleFont>("dejavu10x10_gs_tc.png"))
+  , m_console_entity(m_console_font, m_root_console, game->render_manager())
   {
+    auto world_size = ScreenSize * 10;
+    set_world_size(world_size);
+    set_world_center(world_size / 2);
+
+    m_root_console.put_character({ 1, 1 }, '@');
+
+    add_world_entity(&m_console_entity);
+  }
+
+  void WorldScene::do_update([[maybe_unused]] gf::Time time)
+  {
+    m_console_entity.console().update(m_root_console, m_game->render_manager());
   }
 
 }

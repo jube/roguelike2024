@@ -8,14 +8,14 @@
 
 namespace rl {
 
-  struct Roguelike : gf::SceneSystem {
+  class Roguelike : public gf::SceneSystem {
+  public:
     Roguelike();
 
-
-    WorldScene world_scene;
-
-
+  private:
     gf::ResourceBundle world_bundle();
+
+    std::unique_ptr<WorldScene> m_world_scene = nullptr;
   };
 
 }
