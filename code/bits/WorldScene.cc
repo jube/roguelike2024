@@ -15,13 +15,16 @@ namespace rl {
     set_world_size(world_size);
     set_world_center(world_size / 2);
 
-    m_root_console.put_character({ 1, 1 }, '@');
+    m_state.hero_position = ScreenSize / 2;
 
     add_world_entity(&m_console_entity);
   }
 
   void WorldScene::do_update([[maybe_unused]] gf::Time time)
   {
+
+    m_root_console.put_character(m_state.hero_position, '@');
+
     m_console_entity.console().update(m_root_console, m_game->render_manager());
   }
 

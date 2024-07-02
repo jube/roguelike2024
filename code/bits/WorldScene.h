@@ -6,6 +6,8 @@
 #include <gf2/graphics/ConsoleFont.h>
 #include <gf2/graphics/Scene.h>
 
+#include "WorldState.h"
+
 namespace rl {
   class Roguelike;
 
@@ -22,6 +24,8 @@ namespace rl {
 
     gf::ConsoleFont* m_console_font = nullptr;
     gf::ConsoleEntity m_console_entity;
+
+    WorldState m_state;
   };
 
 }
