@@ -49,6 +49,7 @@ namespace rl {
   {
     m_state.update();
 
+    m_root_console.clear();
     m_root_console.put_character(m_state.hero_position, '@');
 
     m_console_entity.console().update(m_root_console, m_game->render_manager());
