@@ -12,7 +12,7 @@ namespace rl {
   , m_console_font(game->resource_manager()->get<gf::ConsoleFont>("dejavu10x10_gs_tc.png"))
   , m_console_entity(m_console_font, m_root_console, game->render_manager())
   {
-    auto world_size = ScreenSize * 10;
+    auto world_size = ScreenSize * m_console_font->character_size();
     set_world_size(world_size);
     set_world_center(world_size / 2);
 
