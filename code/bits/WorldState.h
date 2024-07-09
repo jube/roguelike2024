@@ -7,6 +7,7 @@
 #include <gf2/core/Vec2.h>
 
 #include "Object.h"
+#include "Map.h"
 
 namespace rl {
 
@@ -15,6 +16,8 @@ namespace rl {
     gf::Direction hero_direction = gf::Direction::Center;
 
     std::vector<Object> objects;
+
+    Map map;
 
     void update();
   };

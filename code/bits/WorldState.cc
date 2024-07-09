@@ -4,7 +4,12 @@ namespace rl {
 
   void WorldState::update()
   {
-    hero.move(gf::displacement(hero_direction));
+    auto displacement = gf::displacement(hero_direction);
+    auto target = hero.position() + displacement;
+
+    if (map.tiles.valid(target) && map.properties.walkable(hero.position() + displacement)) {
+      hero.move(displacement);
+    }
   }
 
 }
