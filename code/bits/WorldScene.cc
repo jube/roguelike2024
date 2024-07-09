@@ -1,6 +1,7 @@
 #include "WorldScene.h"
 
 #include "Roguelike.h"
+#include "gf2/core/Color.h"
 
 namespace rl {
   constexpr gf::Vec2 ScreenSize = { 80, 50 };
@@ -16,7 +17,8 @@ namespace rl {
     set_world_size(world_size);
     set_world_center(world_size / 2);
 
-    m_state.hero_position = ScreenSize / 2;
+    m_state.hero = { ScreenSize / 2, '@', gf::White };
+    m_state.objects.emplace_back(m_state.hero.position() + gf::dirx(5), '@', gf::Yellow);
 
     add_world_entity(&m_console_entity);
   }
@@ -50,7 +52,18 @@ namespace rl {
     m_state.update();
 
     m_root_console.clear();
-    m_root_console.put_character(m_state.hero_position, '@');
+
+    {
+      gf::ConsoleStyle style;
+      style.color.foreground = m_state.hero.color();
+      m_root_console.put_character(m_state.hero.position(), m_state.hero.character(), style);
+    }
+
+    for (auto& object : m_state.objects) {
+      gf::ConsoleStyle style;
+      style.color.foreground = object.color();
+      m_root_console.put_character(object.position(), object.character(), style);
+    }
 
     m_console_entity.console().update(m_root_console, m_game->render_manager());
   }
