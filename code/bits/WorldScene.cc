@@ -21,7 +21,7 @@ namespace rl {
     m_state.hero = { ScreenSize / 2, '@', gf::White };
     m_state.objects.emplace_back(m_state.hero.position() - gf::dirx(5), '@', gf::Yellow);
 
-    m_state.map = generate_dungeon(MapSize);
+    m_state.map = generate_dungeon(MapSize, game->random());
 
     add_world_entity(&m_console_entity);
   }
