@@ -1,5 +1,6 @@
 #include "WorldScene.h"
 
+#include "Map.h"
 #include "Roguelike.h"
 
 namespace rl {
@@ -20,7 +21,7 @@ namespace rl {
     m_state.hero = { ScreenSize / 2, '@', gf::White };
     m_state.objects.emplace_back(m_state.hero.position() - gf::dirx(5), '@', gf::Yellow);
 
-    m_state.map = Map(MapSize);
+    m_state.map = generate_dungeon(MapSize);
 
     add_world_entity(&m_console_entity);
   }
@@ -55,8 +56,8 @@ namespace rl {
 
     m_root_console.clear();
 
-    for (auto position : m_state.map.tiles.position_range()) {
-      m_root_console.set_background(position, m_state.map.tiles(position).dark);
+    for (auto position : m_state.map.position_range()) {
+      m_root_console.set_background(position, tile_to_dark_color(m_state.map.tag_as<Tile>(position)));
     }
 
     {

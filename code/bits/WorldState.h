@@ -4,10 +4,10 @@
 #include <vector>
 
 #include <gf2/core/Direction.h>
+#include <gf2/core/GridMap.h>
 #include <gf2/core/Vec2.h>
 
 #include "Object.h"
-#include "Map.h"
 
 namespace rl {
 
@@ -17,7 +17,7 @@ namespace rl {
 
     std::vector<Object> objects;
 
-    Map map;
+    gf::GridMap map;
 
     void update();
   };

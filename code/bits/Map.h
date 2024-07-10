@@ -1,28 +1,22 @@
 #ifndef RL_MAP_H
 #define RL_MAP_H
 
-#include <gf2/core/Array2D.h>
+#include <cstdint>
+
 #include <gf2/core/Color.h>
 #include <gf2/core/GridMap.h>
 
 namespace rl {
 
-  struct Tile {
-    char16_t character = ' ';
-    gf::Color light;
-    gf::Color dark;
+  enum Tile : uint16_t {
+    Wall,
+    Floor,
   };
 
-  constexpr Tile FloorTile = { ' ', gf::Black, 0x323296 };
-  constexpr Tile WallTile = { ' ', gf::Black, 0x000064 };
+  gf::Color tile_to_dark_color(Tile tile);
+  gf::Color tile_to_light_color(Tile tile);
 
-  struct Map {
-    Map() = default;
-    Map(gf::Vec2I size);
-
-    gf::GridMap properties;
-    gf::Array2D<Tile> tiles;
-  };
+  gf::GridMap generate_dungeon(gf::Vec2I size);
 
 }
 
