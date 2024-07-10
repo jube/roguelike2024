@@ -7,6 +7,10 @@ namespace rl {
   constexpr gf::Vec2 ScreenSize = { 80, 50 };
   constexpr gf::Vec2 MapSize = { 80, 50 };
 
+  constexpr int RoomMaxSize = 10;
+  constexpr int RoomMinSize = 6;
+  constexpr int MaxRooms = 30;
+
   WorldScene::WorldScene(Roguelike* game)
   : m_game(game)
   , m_action_group(m_data.action_group)
@@ -21,7 +25,7 @@ namespace rl {
     m_state.hero = { ScreenSize / 2, '@', gf::White };
     m_state.objects.emplace_back(m_state.hero.position() - gf::dirx(5), '@', gf::Yellow);
 
-    m_state.map = generate_dungeon(MapSize, game->random());
+    m_state.map = generate_dungeon(MapSize, MaxRooms, RoomMinSize, RoomMaxSize, &m_state.hero, game->random());
 
     add_world_entity(&m_console_entity);
   }

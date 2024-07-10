@@ -17,6 +17,7 @@ namespace rl {
     {
     }
 
+    void set_position(gf::Vec2I position);
     gf::Vec2I position() const
     {
       return m_position;

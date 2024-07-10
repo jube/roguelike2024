@@ -2,7 +2,11 @@
 
 #include <cassert>
 
+#include <algorithm>
+
 #include <gf2/core/Geometry.h>
+
+#include "Object.h"
 
 namespace rl {
 
@@ -70,22 +74,41 @@ namespace rl {
 
   }
 
-  gf::GridMap generate_dungeon(gf::Vec2I size, gf::Random* random)
+  gf::GridMap generate_dungeon(gf::Vec2I size, int max_rooms, int room_min_size, int room_max_size, Object* hero,  gf::Random* random)
   {
     gf::GridMap map = gf::GridMap::make_orthogonal(size);
     map.reset(gf::None);
 
-    const gf::RectI room1 = gf::RectI::from_position_size({ 20, 15 }, { 10, 15 });
-    const gf::RectI room2 = gf::RectI::from_position_size({ 35, 15 }, { 10, 15 });
+    std::vector<gf::RectI> rooms;
 
-    for (const gf::RectI room : { room1, room2 }) {
+    for (int i = 0; i < max_rooms; ++i) {
+      gf::Vec2I room_size = { 0, 0 };
+      room_size.w = random->compute_uniform_integer(room_min_size, room_max_size);
+      room_size.h = random->compute_uniform_integer(room_min_size, room_max_size);
+
+      gf::Vec2I room_position = { 0, 0 };
+      room_position.x = random->compute_uniform_integer(0, size.w - room_size.w);
+      room_position.y = random->compute_uniform_integer(0, size.h - room_size.h);
+
+      const gf::RectI room = gf::RectI::from_position_size(room_position, room_size);
+
+      if (std::any_of(rooms.begin(), rooms.end(), [room](const gf::RectI& other_room) { return room.intersects(other_room); })) {
+        continue;
+      }
+
       for (auto position : gf::rectangle_range(room.shrink_by(1))) {
         map.set_empty(position);
         map.set_tag(position, Tile::Floor);
       }
-    }
 
-    dig_tunnel_between(map, room1.center(), room2.center(), random);
+      if (rooms.empty()) {
+        hero->set_position(room.center());
+      } else {
+        dig_tunnel_between(map, rooms.back().center(), room.center(), random);
+      }
+
+      rooms.push_back(room);
+    }
 
     return map;
   }
