@@ -1,7 +1,7 @@
 #ifndef RL_WORLD_SCENE_H
 #define RL_WORLD_SCENE_H
 
-#include <gf2/core/ConsoleData.h>
+#include <gf2/core/ConsoleBuffer.h>
 #include <gf2/graphics/ActionGroup.h>
 #include <gf2/graphics/ConsoleEntity.h>
 #include <gf2/graphics/ConsoleFont.h>
@@ -28,7 +28,7 @@ namespace rl {
 
     gf::ActionGroup m_action_group;
 
-    gf::ConsoleData m_root_console;
+    gf::ConsoleBuffer m_root_console;
 
     gf::ConsoleFont* m_console_font = nullptr;
     gf::ConsoleEntity m_console_entity;

@@ -1,14 +1,14 @@
 #ifndef RL_WORLD_DATA_H
 #define RL_WORLD_DATA_H
 
-#include <gf2/core/ActionData.h>
+#include <gf2/core/ActionSettings.h>
 
 namespace rl {
 
   struct WorldData {
     WorldData();
 
-    gf::ActionGroupData action_group;
+    gf::ActionGroupSettings action_group;
 
   };
 
