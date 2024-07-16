@@ -22,6 +22,8 @@ namespace rl {
     void do_handle_actions() override;
     void do_update(gf::Time time) override;
 
+    void update_field_of_view();
+
     Roguelike* m_game = nullptr;
     WorldData m_data;
     WorldState m_state;

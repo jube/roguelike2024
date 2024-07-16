@@ -7,43 +7,15 @@
 #include <gf2/core/Geometry.h>
 
 #include "Object.h"
+#include "Tile.h"
 
 namespace rl {
 
   namespace {
-
-    struct TileData {
-      char16_t character = ' ';
-      gf::Color light;
-      gf::Color dark;
-    };
-
-    constexpr TileData Tileset[] = {
-      { ' ', gf::Black, 0x000064 }, // Wall
-      { ' ', gf::Black, 0x323296 }, // Floor
-    };
-
-  }
-
-
-  gf::Color tile_to_dark_color(Tile tile)
-  {
-    std::size_t index = static_cast<uint16_t>(tile);
-    assert(index < std::size(Tileset));
-    return Tileset[index].dark; // NOLINT
-  }
-
-  gf::Color tile_to_light_color(Tile tile)
-  {
-    std::size_t index = static_cast<uint16_t>(tile);
-    assert(index < std::size(Tileset));
-    return Tileset[index].light; // NOLINT
-  }
-
-
-  namespace {
     void dig_straight_tunnel_between(gf::GridMap& map, gf::Vec2I start, gf::Vec2I end)
     {
+      assert(start.x == end.x || start.y == end.y);
+
       gf::BresenhamAlgorithm bresenham(start, end);
 
       while (auto maybe_current = bresenham.step()) {

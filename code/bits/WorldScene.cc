@@ -2,6 +2,7 @@
 
 #include "Map.h"
 #include "Roguelike.h"
+#include "Tile.h"
 
 namespace rl {
   constexpr gf::Vec2 ScreenSize = { 80, 50 };
@@ -26,6 +27,7 @@ namespace rl {
     m_state.objects.emplace_back(m_state.hero.position() - gf::dirx(5), '@', gf::Yellow);
 
     m_state.map = generate_dungeon(MapSize, MaxRooms, RoomMinSize, RoomMaxSize, &m_state.hero, game->random());
+    update_field_of_view();
 
     add_world_entity(&m_console_entity);
   }
@@ -57,11 +59,21 @@ namespace rl {
   void WorldScene::do_update([[maybe_unused]] gf::Time time)
   {
     m_state.update();
+    update_field_of_view();
 
     m_root_console.clear();
 
     for (auto position : m_state.map.position_range()) {
-      m_root_console.set_background(position, tile_to_dark_color(m_state.map.tag_as<Tile>(position)));
+      const Tile tile = m_state.map.tag_as<Tile>(position);
+      gf::ConsoleCell cell = { gf::White, gf::Black, ' ' };
+
+      if (m_state.map.visible(position)) {
+        cell = tile_to_light(tile);
+      } else if (m_state.map.explored(position)) {
+        cell = tile_to_dark(tile);
+      }
+
+      m_root_console.cells(position) = cell;
     }
 
     {
@@ -72,6 +84,10 @@ namespace rl {
     }
 
     for (auto& object : m_state.objects) {
+      if (!m_state.map.visible(object.position())) {
+        continue;
+      }
+
       gf::ConsoleStyle style;
       style.color.foreground = object.color();
       style.effect = gf::ConsoleEffect::none();
@@ -80,5 +96,12 @@ namespace rl {
 
     m_console_entity.console().update(m_root_console, m_game->render_manager());
   }
+
+  void WorldScene::update_field_of_view()
+  {
+    m_state.map.clear_visible();
+    m_state.map.compute_field_of_vision(m_state.hero.position(), 8, gf::Visibility::ShadowCast);
+  }
+
 
 }
