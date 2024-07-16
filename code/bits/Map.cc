@@ -74,7 +74,7 @@ namespace rl {
       }
 
       if (rooms.empty()) {
-        hero->set_position(room.center());
+        hero->position = room.center();
       } else {
         dig_tunnel_between(map, rooms.back().center(), room.center(), random);
       }

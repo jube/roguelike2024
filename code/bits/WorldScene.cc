@@ -24,7 +24,7 @@ namespace rl {
     set_world_center(world_size / 2);
 
     m_state.hero = { ScreenSize / 2, '@', gf::White };
-    m_state.objects.emplace_back(m_state.hero.position() - gf::dirx(5), '@', gf::Yellow);
+    m_state.objects.push_back({ m_state.hero.position - gf::dirx(5), '@', gf::Yellow });
 
     m_state.map = generate_dungeon(MapSize, MaxRooms, RoomMinSize, RoomMaxSize, &m_state.hero, game->random());
     update_field_of_view();
@@ -78,20 +78,20 @@ namespace rl {
 
     {
       gf::ConsoleStyle style;
-      style.color.foreground = m_state.hero.color();
+      style.color.foreground = m_state.hero.color;
       style.effect = gf::ConsoleEffect::none();
-      m_root_console.put_character(m_state.hero.position(), m_state.hero.character(), style);
+      m_root_console.put_character(m_state.hero.position, m_state.hero.character, style);
     }
 
     for (auto& object : m_state.objects) {
-      if (!m_state.map.visible(object.position())) {
+      if (!m_state.map.visible(object.position)) {
         continue;
       }
 
       gf::ConsoleStyle style;
-      style.color.foreground = object.color();
+      style.color.foreground = object.color;
       style.effect = gf::ConsoleEffect::none();
-      m_root_console.put_character(object.position(), object.character(), style);
+      m_root_console.put_character(object.position, object.character, style);
     }
 
     m_console_entity.console().update(m_root_console, m_game->render_manager());
@@ -100,7 +100,7 @@ namespace rl {
   void WorldScene::update_field_of_view()
   {
     m_state.map.clear_visible();
-    m_state.map.compute_field_of_vision(m_state.hero.position(), 8, gf::Visibility::ShadowCast);
+    m_state.map.compute_field_of_vision(m_state.hero.position, 8, gf::Visibility::ShadowCast);
   }
 
 
