@@ -18,7 +18,7 @@ namespace rl {
   gf::ResourceBundle Roguelike::world_bundle()
   {
     return gf::ResourceBundle([this](gf::ResourceBundle* bundle, gf::ResourceManager* resource_manager, gf::ResourceAction action) {
-      bundle->handle<gf::ConsoleFont>("dejavu10x10_gs_tc.png", { gf::LibtcodFormat, { 0, 0 }, render_manager() }, resource_manager, action);
+      bundle->handle<gf::ConsoleFont>("dejavu10x10_gs_tc.png", { { gf::ConsoleFontFormat::Grayscale, gf::ConsoleFontFormat::InRow, gf::ConsoleFontFormat::Special }, { 0, 0 }, render_manager() }, resource_manager, action);
     });
   }
 

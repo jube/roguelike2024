@@ -1,25 +1,25 @@
 #ifndef RL_WORLD_STATE_H
 #define RL_WORLD_STATE_H
 
-#include <vector>
+#include <optional>
 
+#include <gf2/core/ConsoleBuffer.h>
 #include <gf2/core/Direction.h>
-#include <gf2/core/GridMap.h>
-#include <gf2/core/Vec2.h>
 
-#include "Object.h"
+#include "Map.h"
 
 namespace rl {
 
   struct WorldState {
-    Object hero;
     gf::Direction hero_direction = gf::Direction::Center;
 
-    std::vector<Object> objects;
-
-    gf::GridMap map;
+    Map map;
 
     void update();
+    void render_to(gf::ConsoleBuffer& buffer);
+
+    std::optional<std::size_t> blocking_object_at(gf::Vec2I position) const;
+
   };
 
 }

@@ -11,6 +11,7 @@ namespace rl {
   constexpr int RoomMaxSize = 10;
   constexpr int RoomMinSize = 6;
   constexpr int MaxRooms = 30;
+  constexpr int MaxMonstersPerRoom = 2;
 
   WorldScene::WorldScene(Roguelike* game)
   : m_game(game)
@@ -23,10 +24,7 @@ namespace rl {
     set_world_size(world_size);
     set_world_center(world_size / 2);
 
-    m_state.hero = { ScreenSize / 2, '@', gf::White };
-    m_state.objects.push_back({ m_state.hero.position - gf::dirx(5), '@', gf::Yellow });
-
-    m_state.map = generate_dungeon(MapSize, MaxRooms, RoomMinSize, RoomMaxSize, &m_state.hero, game->random());
+    m_state.map = generate_dungeon(MapSize, MaxRooms, RoomMinSize, RoomMaxSize, MaxMonstersPerRoom, game->random());
     update_field_of_view();
 
     add_world_entity(&m_console_entity);
@@ -62,45 +60,14 @@ namespace rl {
     update_field_of_view();
 
     m_root_console.clear();
-
-    for (auto position : m_state.map.position_range()) {
-      const Tile tile = m_state.map.tag_as<Tile>(position);
-      gf::ConsoleCell cell = { gf::White, gf::Black, ' ' };
-
-      if (m_state.map.visible(position)) {
-        cell = tile_to_light(tile);
-      } else if (m_state.map.explored(position)) {
-        cell = tile_to_dark(tile);
-      }
-
-      m_root_console.cells(position) = cell;
-    }
-
-    {
-      gf::ConsoleStyle style;
-      style.color.foreground = m_state.hero.color;
-      style.effect = gf::ConsoleEffect::none();
-      m_root_console.put_character(m_state.hero.position, m_state.hero.character, style);
-    }
-
-    for (auto& object : m_state.objects) {
-      if (!m_state.map.visible(object.position)) {
-        continue;
-      }
-
-      gf::ConsoleStyle style;
-      style.color.foreground = object.color;
-      style.effect = gf::ConsoleEffect::none();
-      m_root_console.put_character(object.position, object.character, style);
-    }
-
+    m_state.render_to(m_root_console);
     m_console_entity.console().update(m_root_console, m_game->render_manager());
   }
 
   void WorldScene::update_field_of_view()
   {
-    m_state.map.clear_visible();
-    m_state.map.compute_field_of_vision(m_state.hero.position, 8, gf::Visibility::ShadowCast);
+    m_state.map.grid.clear_visible();
+    m_state.map.grid.compute_field_of_vision(m_state.map.hero.position, 8, gf::Visibility::ShadowCast);
   }
 
 
