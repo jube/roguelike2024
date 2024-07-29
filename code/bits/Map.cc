@@ -6,10 +6,51 @@
 
 #include <gf2/core/Geometry.h>
 
-#include "Object.h"
 #include "Tile.h"
 
 namespace rl {
+
+  std::optional<std::size_t> Map::target_actor_at(gf::Vec2I target)
+  {
+    auto iterator = std::find_if(actors.begin(), actors.end(), [target](const Actor& actor) {
+      return actor.entity.position == target;
+    });
+
+    if (iterator == actors.end()) {
+      return std::nullopt;
+    }
+
+    return std::distance(actors.begin(), iterator);
+  }
+
+  bool Map::blocking_entity_at(gf::Vec2I target)
+  {
+    auto iterator = std::find_if(actors.begin(), actors.end(), [target](const Actor& actor) {
+      return actor.entity.blocks_movement && actor.entity.position == target;
+    });
+
+    return iterator != actors.end();
+  }
+
+  std::vector<gf::Vec2I> Map::compute_path(gf::Vec2I origin, gf::Vec2I target)
+  {
+    grid.clear_blocks();
+
+    for (auto& actor : actors) {
+      if (actor.entity.blocks_movement) {
+        grid.set_blocked(actor.entity.position);
+      }
+    }
+
+    const gf::RouteCost cost = { 1.0f, gf::Sqrt2, 5.0f };
+    return grid.compute_route(origin, target, cost);
+  }
+
+
+
+  /*
+   * Procedural Generation
+   */
 
   namespace {
     void dig_straight_tunnel_between(gf::GridMap& grid, gf::Vec2I start, gf::Vec2I end)
@@ -51,16 +92,16 @@ namespace rl {
 
         auto position = random->compute_position(room.shrink_by(1));
 
-        if (std::any_of(map.objects.begin(), map.objects.end(), [position](const Object& other) { return position == other.position; })) {
+        if (std::any_of(map.actors.begin(), map.actors.end(), [position](const Actor& other) { return position == other.entity.position; })) {
           continue;
         }
 
         if (random->compute_bernoulli(0.8)) {
           // orc
-          map.objects.push_back(Object::orc(position));
+          map.actors.push_back(Actor::orc(position));
         } else {
           // troll
-          map.objects.push_back(Object::troll(position));
+          map.actors.push_back(Actor::troll(position));
         }
 
       }
@@ -98,7 +139,7 @@ namespace rl {
       }
 
       if (rooms.empty()) {
-        map.hero = Object::hero(room.center());
+        map.hero = Actor::hero(room.center());
       } else {
         dig_tunnel_between(map.grid, rooms.back().center(), room.center(), random);
       }

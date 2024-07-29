@@ -13,9 +13,23 @@ namespace rl {
   constexpr int MaxRooms = 30;
   constexpr int MaxMonstersPerRoom = 2;
 
+
+  gf::ActionGroupSettings action_group_settings()
+  {
+    using namespace gf::literals;
+
+    gf::ActionGroupSettings action_group;
+    action_group.actions.emplace("up"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Up).add_scancode_control(gf::Scancode::W));
+    action_group.actions.emplace("left"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Left).add_scancode_control(gf::Scancode::A));
+    action_group.actions.emplace("down"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Down).add_scancode_control(gf::Scancode::S));
+    action_group.actions.emplace("right"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Right).add_scancode_control(gf::Scancode::D));
+
+    return action_group;
+  }
+
   WorldScene::WorldScene(Roguelike* game)
   : m_game(game)
-  , m_action_group(m_data.action_group)
+  , m_action_group(action_group_settings())
   , m_root_console(ScreenSize)
   , m_console_font(game->resource_manager()->get<gf::ConsoleFont>("dejavu10x10_gs_tc.png"))
   , m_console_entity(m_console_font, m_root_console, game->render_manager())
@@ -67,7 +81,7 @@ namespace rl {
   void WorldScene::update_field_of_view()
   {
     m_state.map.grid.clear_visible();
-    m_state.map.grid.compute_field_of_vision(m_state.map.hero.position, 8, gf::Visibility::ShadowCast);
+    m_state.map.grid.compute_field_of_vision(m_state.map.hero.entity.position, 8, gf::Visibility::ShadowCast);
   }
 
 

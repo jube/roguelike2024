@@ -7,7 +7,6 @@
 #include <gf2/graphics/ConsoleFont.h>
 #include <gf2/graphics/Scene.h>
 
-#include "WorldData.h"
 #include "WorldState.h"
 
 namespace rl {
@@ -25,7 +24,7 @@ namespace rl {
     void update_field_of_view();
 
     Roguelike* m_game = nullptr;
-    WorldData m_data;
+
     WorldState m_state;
 
     gf::ActionGroup m_action_group;

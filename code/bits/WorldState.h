@@ -18,8 +18,6 @@ namespace rl {
     void update();
     void render_to(gf::ConsoleBuffer& buffer);
 
-    std::optional<std::size_t> blocking_object_at(gf::Vec2I position) const;
-
   };
 
 }

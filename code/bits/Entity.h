@@ -1,5 +1,5 @@
-#ifndef RL_OBJECT_H
-#define RL_OBJECT_H
+#ifndef RL_ENTITY_H
+#define RL_ENTITY_H
 
 #include <string>
 
@@ -8,18 +8,14 @@
 
 namespace rl {
 
-  struct Object {
+  struct Entity {
     gf::Vec2I position = { 0, 0 };
     char16_t character = ' ';
     gf::Color color = gf::White;
     std::string name;
     bool blocks_movement = false;
-
-    static Object hero(gf::Vec2I position);
-    static Object orc(gf::Vec2I position);
-    static Object troll(gf::Vec2I position);
   };
 
 }
 
-#endif // RL_OBJECT_H
+#endif // RL_ENTITY_H
