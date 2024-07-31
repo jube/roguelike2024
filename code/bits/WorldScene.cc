@@ -2,7 +2,7 @@
 
 #include "Map.h"
 #include "Roguelike.h"
-#include "Tile.h"
+#include "gf2/core/ActionSettings.h"
 
 namespace rl {
   constexpr gf::Vec2 ScreenSize = { 80, 50 };
@@ -23,6 +23,8 @@ namespace rl {
     action_group.actions.emplace("left"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Left).add_scancode_control(gf::Scancode::A));
     action_group.actions.emplace("down"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Down).add_scancode_control(gf::Scancode::S));
     action_group.actions.emplace("right"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Right).add_scancode_control(gf::Scancode::D));
+
+    action_group.actions.emplace("wait"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Escape));
 
     return action_group;
   }
@@ -53,16 +55,26 @@ namespace rl {
   {
     using namespace gf::literals;
 
+    m_state.intent = Intent::None;
+
     if (m_action_group.active("up"_id)) {
+      m_state.intent = Intent::Move;
       m_state.hero_direction = gf::Direction::Up;
     } else if (m_action_group.active("left"_id)) {
+      m_state.intent = Intent::Move;
       m_state.hero_direction = gf::Direction::Left;
     } else if (m_action_group.active("down"_id)) {
+      m_state.intent = Intent::Move;
       m_state.hero_direction = gf::Direction::Down;
     } else if (m_action_group.active("right"_id)) {
+      m_state.intent = Intent::Move;
       m_state.hero_direction = gf::Direction::Right;
     } else {
       m_state.hero_direction = gf::Direction::Center;
+    }
+
+    if (m_action_group.active("wait"_id)) {
+      m_state.intent = Intent::Wait;
     }
 
     m_action_group.reset();
@@ -81,7 +93,7 @@ namespace rl {
   void WorldScene::update_field_of_view()
   {
     m_state.map.grid.clear_visible();
-    m_state.map.grid.compute_field_of_vision(m_state.map.hero.entity.position, 8, gf::Visibility::ShadowCast);
+    m_state.map.grid.compute_field_of_vision(m_state.map.hero().entity.position, 8, gf::Visibility::ShadowCast);
   }
 
 

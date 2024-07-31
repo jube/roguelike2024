@@ -8,10 +8,10 @@
 
 namespace rl {
   struct Map {
-    Actor hero;
     std::vector<Actor> actors;
     gf::GridMap grid;
 
+    Actor& hero() { return actors.front(); }
 
     std::optional<std::size_t> target_actor_at(gf::Vec2I target);
     bool blocking_entity_at(gf::Vec2I target);

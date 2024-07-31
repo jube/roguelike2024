@@ -41,8 +41,19 @@ namespace rl {
     auto maybe_actor = map.target_actor_at(target);
     assert(maybe_actor);
 
-    auto actor_index = *maybe_actor;
-    std::cout << "You kicked " << map.actors[actor_index].entity.name << ", much to its annoyance!\n";
+    auto& other = map.actors[*maybe_actor];
+
+    int damage = actor.fighter.power - other.fighter.defense;
+
+    std::string description = actor.entity.name + " attacks " + other.entity.name;
+
+    if (damage > 0) {
+      std::cout << description << " for " << damage << " hit points.\n";
+      other.fighter.health -= damage;
+    } else {
+      std::cout << description << " but does no damage.\n";
+    }
+
     return true;
   }
 

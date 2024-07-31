@@ -139,7 +139,7 @@ namespace rl {
       }
 
       if (rooms.empty()) {
-        map.hero = Actor::hero(room.center());
+        map.actors.push_back(Actor::hero(room.center()));
       } else {
         dig_tunnel_between(map.grid, rooms.back().center(), room.center(), random);
       }

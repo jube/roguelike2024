@@ -12,13 +12,15 @@ namespace rl {
   struct Actor {
     Entity entity;
     Fighter fighter;
-    std::optional<AI> ai;
+    AI ai;
 
     bool alive() const
     {
-      return ai.has_value();
+      return ai.variant.index() != 0;
     }
 
+    void take_damage(int damage);
+    void die();
 
     static Actor hero(gf::Vec2I position);
     static Actor orc(gf::Vec2I position);

@@ -10,7 +10,14 @@
 
 namespace rl {
 
+  enum class Intent {
+    None,
+    Wait,
+    Move,
+  };
+
   struct WorldState {
+    Intent intent = Intent::None;
     gf::Direction hero_direction = gf::Direction::Center;
 
     Map map;

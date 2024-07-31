@@ -10,18 +10,30 @@ namespace rl {
 
   void WorldState::update()
   {
-    if (hero_direction == gf::Direction::Center) {
+    if (intent == Intent::None) {
       return;
     }
 
-    auto displacement = gf::displacement(hero_direction);
-    auto target = map.hero.entity.position + displacement;
+    if (intent == Intent::Move) {
+      if (hero_direction == gf::Direction::Center) {
+        return;
+      }
 
-    if (!bump(map, map.hero, target)) {
-      return;
+      auto displacement = gf::displacement(hero_direction);
+      auto target = map.hero().entity.position + displacement;
+
+      if (!bump(map, map.hero(), target)) {
+        return;
+      }
+    } else if (intent == Intent::Wait) {
+      // nothing
     }
 
     // handle ennemy turns
+
+    for (auto& actor : map.actors) {
+      actor.ai.perform(actor, map);
+    }
 
   }
 
@@ -40,13 +52,6 @@ namespace rl {
       }
 
       buffer.cells(position) = cell;
-    }
-
-    {
-      gf::ConsoleStyle style;
-      style.color.foreground = map.hero.entity.color;
-      style.effect = gf::ConsoleEffect::none();
-      buffer.put_character(map.hero.entity.position, map.hero.entity.character, style);
     }
 
     for (auto& actor : map.actors) {
